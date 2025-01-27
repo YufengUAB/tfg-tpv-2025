@@ -1,0 +1,201 @@
+.opcion-page-container {
+    display: flex;
+    height: 100vh;
+    padding: 20px;
+    background-color: #121212;
+    color: #FFFFFF;
+    gap: 20px; /* Espacio entre la lista y el formulario */
+}
+
+.opciones-section {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative; /* Para posicionar el botón de volver en la parte inferior */
+}
+
+.opciones-section button {
+    padding: 15px;
+    font-size: 1.2rem;
+    background-color: #3E3E3E;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.opciones-section button:hover {
+    background-color: #5A5A5A;
+}
+
+.volver-button {
+    position: absolute;
+    bottom: 10px; 
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2rem;
+    background-color: #FF4081;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.volver-button:hover {
+    background-color: #FF79B0;
+}
+
+.form-section {
+    width: 70%;
+    padding: 20px;
+    background-color: #2C2C2C;
+    border-radius: 8px;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.form-container label {
+    font-size: 1rem;
+}
+
+.form-container input,
+.form-container select,
+.form-container button {
+    padding: 10px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+}
+
+/* Botón de envío del formulario */
+.form-container button {
+    background-color: #4CAF50;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.form-container button:hover {
+    background-color: #66BB6A;
+}
+
+.form-container button.btn-danger {
+    background-color: red; /* Color de fondo rojo */
+    color: white; /* Color del texto blanco */
+}
+
+.form-container button.btn-danger:hover {
+    background-color: darkred; /* Color de fondo al pasar el mouse */
+}
+
+
+.form-container button.btn-disabled {
+    background-color: lightgray; /* Color cuando está deshabilitado */
+    color: darkgray; /* Texto gris oscuro */
+    cursor: not-allowed; /* Cambia el cursor */
+  }
+  
+/* Evitar efecto de hover en el botón deshabilitado */
+.form-container button.btn-disabled:hover {
+    background-color: lightgray; /* Mantener el mismo color en hover */
+}
+
+/* Estilos para el botón de eliminar categoría */
+.delete-category-button {
+    padding: 10px;
+    font-size: 1rem;
+    background-color: #E53935; /* Rojo para el botón de eliminar */
+    color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px; /* Espacio superior para separar del selector */
+    margin-right: 10px;
+}
+
+.delete-category-button:hover {
+    background-color: #EF5350; /* Color más claro al pasar el ratón */
+}
+
+.modal-content {
+    background-color: #2C2C2C;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.modal-overlay {
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semi-transparente */
+    position: fixed; /* Fijo en la pantalla */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex; /* Para centrar el contenido */
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+}
+
+.confirm-button-modal, .cancel-button-modal {
+    padding: 10px;
+    margin-top: 10px; /* Espacio entre botones */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.confirm-button-modal {
+    background-color: #4CAF50; /* Color para confirmar */
+    color: #FFFFFF;
+}
+
+.confirm-button-modal:hover {
+    background-color: #66BB6A; /* Efecto hover */
+}
+
+.cancel-button-modal {
+    background-color: #FF4081; /* Color para cancelar */
+    color: #FFFFFF;
+}
+
+.cancel-button-modal:hover {
+    background-color: #FF79B0; /* Efecto hover */
+}
+
+/* Estilos para el botón que llama a la petición initBD */
+.init-db-button {
+    padding: 15px;
+    font-size: 1.2rem;
+    background-color: green;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%; /* Para que el botón ocupe todo el ancho disponible */
+    margin-top: 20px; /* Espacio superior */
+}
+
+.init-db-button:hover {
+    background-color: #5A5A5A; /* Color más claro cuando se pasa el mouse */
+}
+
+.init-db-button:disabled {
+    background-color: lightgray; /* Color cuando está deshabilitado */
+    color: darkgray; /* Texto gris oscuro */
+    cursor: not-allowed; /* Cambia el cursor cuando está deshabilitado */
+}
+
+.init-db-button:disabled:hover {
+    background-color: lightgray; /* Mantiene el color cuando se pasa el mouse */
+}
+    

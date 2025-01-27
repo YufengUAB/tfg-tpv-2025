@@ -1,0 +1,430 @@
+.mesa-page-container {
+    display: flex;
+    height: 98vh;
+}
+
+.mesa-info {
+    width: 40%;
+    padding-right: 20px;
+    color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.mesa-info-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #2C2C2C;
+    height: 50%;
+    border-radius: 8px;
+    color: #FFFFFF;
+    margin-bottom: 5px;
+}
+
+.mesa-info-container-factura {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: orange;
+    height: 50%;
+    border-radius: 8px;
+    color: #FFFFFF;
+    margin-bottom: 5px;
+}
+
+
+.mesa-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px 10px;
+    font-size: 1.5rem;
+    color: #FFFFFF;
+}
+
+.mesa-nombre {
+    font-weight: bold;
+}
+
+.mesa-precio-total {
+    font-weight: bold;
+    color: #FFFFFF;
+}
+
+.detalle-pedido-container {
+    background-color: #2C2C2C;
+    border-radius: 8px;
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+th,
+td {
+    padding: 6px 8px;
+    font-size: 1.5rem;
+    text-align: center;
+    color: #FFFFFF;
+}
+
+th {
+    background-color: #4F4F4F;
+    font-weight: bold;
+    font-size: 1.5rem;
+    height: auto;
+}
+
+td:first-child {
+    text-align: left;
+}
+
+th:nth-child(1),
+td:nth-child(1) {
+    width: 40%;
+}
+
+th:nth-child(2),
+td:nth-child(2) {
+    width: 20%;
+}
+
+th:nth-child(3),
+td:nth-child(3) {
+    width: 15%;
+}
+
+th:nth-child(4),
+td:nth-child(4) {
+    width: 15%;
+}
+
+table tbody tr {
+    background-color: #3E3E3E;
+}
+
+tr.selected {
+    background-color: #FFB74D;
+}
+
+tr:hover {
+    background-color: #707070;
+}
+
+.productos-container {
+    background-color: #2C2C2C;
+    border-radius: 8px;
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: 50%;
+}
+
+.productos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+}
+
+.producto-button {
+    background-color: #3E3E3E;
+    color: #FFFFFF;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: min(1.1rem, 4vw);
+    text-align: center;
+}
+
+.producto-button:hover {
+    background-color: #5A5A5A;
+}
+
+.numpad-section-mesa {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #2C2C2C;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.numpad-display-mesa {
+    width: 100%;
+    padding: 10px;
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 20px;
+    background-color: #1E1E1E;
+    color: #FFFFFF;
+    border: 1px solid #3E3E3E;
+    border-radius: 5px;
+}
+
+.numpad-wrapper-mesa {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.numbers-grid-mesa {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    width: 70%;
+}
+
+.numpad-button-mesa {
+    padding: 20px;
+    font-size: 2rem;
+    background-color: #3E3E3E;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.numpad-button-mesa:hover {
+    background-color: #5A5A5A;
+}
+
+.actions-grid-mesa {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-left: 10px;
+    width: 30%;
+}
+
+.action-button-mesa {
+    background-color: #FF4081;
+}
+
+.action-button-mesa:hover {
+    background-color: #FF79B0;
+}
+
+.factura-button-mesa {
+    background-color: #FF9500;
+}
+
+.factura-button-mesa:hover {
+    background-color: #FFB74D;
+}
+
+.confirm-button-mesa {
+    background-color: #4CAF50;
+}
+
+.confirm-button-mesa:hover {
+    background-color: #66BB6A;
+}
+
+/* Estilos para la sección de categorías */
+.categorias-section {
+    margin-right: 20px;
+    width: 20%;
+    /* 20% de la pantalla para las categorías */
+    padding: 20px;
+    background-color: #2C2C2C;
+    border-radius: 8px;
+}
+
+.categorias-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    height: 93vh;
+    overflow: auto;
+  }
+  
+  /* Para navegadores Webkit como Chrome, Safari, y Edge */
+  .categorias-container::-webkit-scrollbar {
+    width: 12px; /* Ancho de la barra de desplazamiento vertical */
+    height: 12px; /* Altura de la barra de desplazamiento horizontal (si se usa) */
+  }
+  
+  .categorias-container::-webkit-scrollbar-thumb {
+    background-color: #4CAF50; /* Color del 'thumb' (la parte que se mueve) */
+    border-radius: 10px; /* Bordes redondeados */
+  }
+  
+  .categorias-container::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* Fondo de la pista (el área sobre la que se mueve el 'thumb') */
+    border-radius: 10px;
+  }
+  
+  .categorias-container::-webkit-scrollbar-thumb:hover {
+    background-color: #45a049; /* Color cuando se pasa el ratón por encima */
+  }
+  
+
+.categoria-item {
+    background-color: #3E3E3E;
+    color: #FFFFFF;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    font-size: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.categoria-item:hover {
+    background-color: #5A5A5A;
+}
+
+.cantidad-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.cantidad {
+    width: 1.5rem;
+    align-items: center;
+    justify-content: center;
+    padding-right: 5px;
+}
+
+.cantidad-button {
+    background-color: #2C2C2C;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 1.5rem;
+    width: 2.5rem;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.cantidad-button:hover {
+    background-color: #555555;
+}
+
+.cantidad-container span {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.numpad-button-mesa.basura-button-mesa {
+    background-color: red;
+}
+
+.numpad-button-mesa.basura-button-mesa:hover {
+    background-color: darkred;
+}
+
+.numpad-button-mesa.cambio-button-mesa {
+    background-color: blue;
+}
+
+.numpad-button-mesa.cambio-button-mesa:hover {
+    background-color: darkblue;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.modal-content button {
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-content button:hover {
+    background-color: #45a049;
+}
+
+.modal-content h2 {
+    margin-bottom: 20px;
+}
+
+.pago-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
+    background-color: #2C2C2C;
+    border-radius: 10px;
+}
+
+.pago-container h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #FFFFFF;
+}
+
+.pago-total,
+.pago-pagado {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #FFFFFF;
+}
+
+.tabla-contenedor {
+    width: 100%;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.mesa-info-container-pagar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #2C2C2C;
+    height: 50%;
+    border-radius: 8px;
+    color: #FFFFFF;
+    margin-bottom: 5px;
+}
+
+.productos-container-pagar {
+    background-color: #2C2C2C;
+    border-radius: 8px;
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: 50%;
+}

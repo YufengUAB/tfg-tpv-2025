@@ -1,0 +1,148 @@
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        background-color: #121212;
+        color: #FFFFFF;
+    }
+
+    .main-container {
+        display: flex;
+        height: 98vh;
+    }
+
+    .mesas-section {
+        padding: 20px;
+        background-color: #1E1E1E;
+        width: 50%;
+        overflow-y: auto;
+    }
+
+    .mesa-button {
+        font-size: 2vw;
+        padding: 1.5vw;
+        cursor: pointer;
+        width: 7.3vw;
+        height: 7.3vw;
+        background-color: #3E3E3E;
+        color: #FFFFFF;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+        margin: 5px;
+    }
+
+    .mesa-button-estado-2 {
+        font-size: 2vw;
+        padding: 1.5vw;
+        cursor: pointer;
+        width: 7.3vw;
+        height: 7.3vw;
+        background-color: orange;
+        color: #FFFFFF;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+        margin: 5px;
+    }
+    
+
+    .mesa-button:hover {
+        background-color: #5A5A5A;
+    }
+
+    .numpad-section {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        width: 50%;
+        padding: 20px;
+        background-color: #2C2C2C;
+    }
+
+    .mesa-display {
+        font-size: 2vw;
+        padding: 1vw;
+        width: 80%;
+        text-align: center;
+        margin-bottom: 2vw;
+        background-color: #1E1E1E;
+        color: #FFFFFF;
+        border: 1px solid #3E3E3E;
+    }
+
+    .numpad-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 2vw;
+        width: 100%;
+    }
+
+    .letters-column {
+        display: flex;
+        flex-direction: column;
+        gap: 1vw;
+    }
+
+    .numbers-column {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 1vw;
+    }
+
+    .numpad-button {
+        font-size: 2vw;
+        padding: 1.5vw;
+        cursor: pointer;
+        width: 8vw;
+        height: 8vw;
+        background-color: #3E3E3E;
+        color: #FFFFFF;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .numpad-button:hover {
+        background-color: #5A5A5A;
+    }
+
+    .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 1vw;
+        justify-content: flex-start;
+        width: 8vw;
+    }
+
+    .action-button {
+        font-size: 2vw;
+        padding: 1.5vw;
+        cursor: pointer;
+        width: 100%;
+        background-color: #FF4081;
+        color: #FFFFFF;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .action-button:hover {
+        background-color: #FF79B0;
+    }
+
+    .confirm-button {
+        font-size: 2vw;
+        background-color: #FF4081;
+        color: #FFFFFF;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .confirm-button:hover {
+        background-color: #FF79B0;
+    }
