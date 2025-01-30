@@ -1,51 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; 
-import authService from '../services/authService'; // Importa el servicio de autenticación
-import { useUser } from '../context/userContext'; // Importa el contexto para manejar el estado de usuario
+import authService from '../services/authService'; 
+import { useUser } from '../context/userContext'; 
 
 const LoginPage = () => {
-  // Declaración de los estados locales
-  const [username, setUsername] = useState(''); // Estado para el nombre de usuario
-  const [password, setPassword] = useState(''); // Estado para la contraseña
-  const { setUserData } = useUser(); // Obtener la función para actualizar el contexto de usuario
-  const [error, setError] = useState(''); // Estado para mostrar posibles errores
-  const [loading, setLoading] = useState(false); // Estado para indicar si la solicitud está en proceso
-  const navigate = useNavigate(); // Hook para navegar entre las páginas
+  const [username, setUsername] = useState(''); 
+  const [password, setPassword] = useState(''); 
+  const { setUserData } = useUser(); 
+  const [error, setError] = useState(''); 
+  const [loading, setLoading] = useState(false); 
+  const navigate = useNavigate(); 
 
   // Este hook se ejecuta al cargar la página y limpia el estado de usuario
   useEffect(() => {
-    setUserData(null); // Restablece cualquier dato de usuario previo
+    setUserData(null); 
   }, [setUserData]);
 
   // Función que maneja el evento de envío del formulario
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Evita el comportamiento por defecto del formulario (recarga de la página)
-    setLoading(true); // Activa el estado de carga
+    event.preventDefault(); 
+    setLoading(true); 
 
-    // Verifica si los campos están vacíos y muestra un error si es el caso
     if (!username || !password) {
       setError('Por favor, completa todos los campos');
-      setLoading(false); // Detiene la carga
+      setLoading(false); 
       return;
     }
 
     try {
-      // Intenta autenticar al usuario usando el servicio de autenticación
       const data = await authService.login(username, password);
       console.log('Inicio de sesión exitoso:', data);
 
-      // Si la autenticación es exitosa, actualiza el estado del usuario
       setUserData(data);
 
-      // Redirige a la página principal
       navigate('/main'); 
 
-      setError(''); // Limpia el mensaje de error en caso de éxito
+      setError(''); 
     } catch (error) {
-      // Si ocurre un error, muestra un mensaje de error
       setError('Error al iniciar sesión: ' + error.message);
     } finally {
-      // Finaliza el estado de carga
       setLoading(false); 
     }
   };
