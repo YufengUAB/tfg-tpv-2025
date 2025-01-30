@@ -17,48 +17,86 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tpv.api.entity.DetallePedido;
 import com.tpv.api.service.DetallePedidoServiceImpl;
 
+/**
+ * Controlador REST para gestionar operaciones relacionadas con detalles de pedidos.
+ * Expone endpoints para obtener, crear, actualizar y eliminar detalles de pedidos.
+ */
 @RestController
 @RequestMapping("/api/v1/detallepedido")
 public class DetallePedidoController {
 
     @Autowired
-    DetallePedidoServiceImpl detallePedidoService;
-        
+    private DetallePedidoServiceImpl detallePedidoService;
+
+    /**
+     * Obtiene todos los detalles de pedidos.
+     * 
+     * @return Lista de todos los detalles de pedidos.
+     */
     @GetMapping("/detallepedidos")
-    public List<DetallePedido> getAll(){
+    public List<DetallePedido> getAll() {
         return detallePedidoService.getAll();
     }
-    
+
+    /**
+     * Guarda un nuevo detalle de pedido.
+     * 
+     * @param detallePedido Detalle de pedido a guardar.
+     * @return ResponseEntity con el detalle de pedido creado.
+     */
     @PostMapping("/save")
-    public ResponseEntity<Object> save(@RequestBody DetallePedido detallePedido){
-        DetallePedido nuevo_detallePedido = detallePedidoService.save(detallePedido);
-        return new ResponseEntity<>(nuevo_detallePedido, HttpStatus.CREATED);
+    public ResponseEntity<Object> save(@RequestBody DetallePedido detallePedido) {
+        DetallePedido nuevoDetallePedido = detallePedidoService.save(detallePedido);
+        return new ResponseEntity<>(nuevoDetallePedido, HttpStatus.CREATED);
     }
-    
+
+    /**
+     * Obtiene un detalle de pedido por su ID.
+     * 
+     * @param id ID del detalle de pedido.
+     * @return ResponseEntity con el detalle de pedido encontrado.
+     */
     @GetMapping("/detallepedido/{id}")
-    public ResponseEntity<DetallePedido> getByIdDetallePedido(@PathVariable long id){
+    public ResponseEntity<DetallePedido> getByIdDetallePedido(@PathVariable long id) {
         DetallePedido detallePedidoPorId = detallePedidoService.getByIdDetallePedido(id);
         return ResponseEntity.ok(detallePedidoPorId);
     }
-    
+
+    /**
+     * Elimina un detalle de pedido por su ID.
+     * 
+     * @param id ID del detalle de pedido a eliminar.
+     * @return ResponseEntity con un mensaje de confirmación.
+     */
     @DeleteMapping("/detallepedido/{id}")
-    public ResponseEntity<HashMap<String,Boolean>> remove(@PathVariable long id){
-        this.detallePedidoService.remove(id);
+    public ResponseEntity<HashMap<String, Boolean>> remove(@PathVariable long id) {
+        detallePedidoService.remove(id);
         HashMap<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
         return ResponseEntity.ok(response);
     }
-    
+
+    /**
+     * Actualiza un detalle de pedido existente.
+     * 
+     * @param detallePedido Detalle de pedido con los datos actualizados.
+     * @return ResponseEntity con el número de filas afectadas.
+     */
     @PostMapping("/update")
-    public ResponseEntity<Integer> update(@RequestBody DetallePedido detallePedido){
+    public ResponseEntity<Integer> update(@RequestBody DetallePedido detallePedido) {
         int detallePedidoActualizado = detallePedidoService.update(detallePedido);
         return ResponseEntity.ok(detallePedidoActualizado);
     }
 
+    /**
+     * Obtiene los detalles de pedido asociados a un pedido específico.
+     * 
+     * @param idPedido ID del pedido.
+     * @return ResponseEntity con los detalles de pedido encontrados.
+     */
     @GetMapping("/pedido/{idPedido}")
-    public ResponseEntity<Iterable<DetallePedido>> findByIdPedido(@PathVariable int idPedido){
+    public ResponseEntity<Iterable<DetallePedido>> findByIdPedido(@PathVariable int idPedido) {
         Iterable<DetallePedido> detallePedidoPorIdPedido = detallePedidoService.findByIdPedido(idPedido);
         return ResponseEntity.ok(detallePedidoPorIdPedido);
     }
-    
 }

@@ -13,6 +13,9 @@ import com.tpv.api.entity.Producto;
 import com.tpv.api.service.CategoriaServiceImpl;
 import com.tpv.api.service.ProductoServiceImpl;
 
+/**
+ * Controlador REST para inicializar un TPV básico con categorías y productos predefinidos.
+ */
 @RestController
 @RequestMapping("/api/v1/basicTPV")
 public class InitBasicTPV {
@@ -23,11 +26,15 @@ public class InitBasicTPV {
     @Autowired
     private ProductoServiceImpl productoService;
 
+    /**
+     * Inicializa el TPV con categorías y productos predefinidos.
+     * 
+     * @return Mensaje de éxito indicando que el TPV se ha inicializado correctamente.
+     */
     @GetMapping("/initTPV")
     public String initTPV() {
-
+        // Crear y guardar categorías predefinidas
         List<Categoria> categorias = new ArrayList<>();
-
         categorias.add(new Categoria("Bebidas"));
         categorias.add(new Categoria("Tapas Calientes"));
         categorias.add(new Categoria("Tapas Frias"));
@@ -39,13 +46,12 @@ public class InitBasicTPV {
         categorias.add(new Categoria("Ofertas"));
         categorias.add(new Categoria("Cubatas"));
 
-        categorias.forEach(categoria -> {
-            categoriaService.save(categoria);
-        });
+        categorias.forEach(categoria -> categoriaService.save(categoria));
 
+        // Crear y guardar productos predefinidos
         List<Producto> productos = new ArrayList<>();
 
-        // Agregar productos a la lista
+        // Productos de la categoría "Bebidas"
         productos.add(new Producto("Coca-Cola", 2.50, 1, 100));
         productos.add(new Producto("Aquarius", 2.50, 1, 80));
         productos.add(new Producto("Fanta Naranja", 2.50, 1, 90));
@@ -57,6 +63,7 @@ public class InitBasicTPV {
         productos.add(new Producto("Damm Lemon", 3.00, 1, 50));
         productos.add(new Producto("RedBull", 3.00, 1, 50));
 
+        // Productos de la categoría "Tapas Calientes"
         productos.add(new Producto("Bravas", 4.00, 2, 50));
         productos.add(new Producto("Cochinillo", 5.20, 2, 40));
         productos.add(new Producto("Pincho", 5.50, 2, 30));
@@ -68,6 +75,7 @@ public class InitBasicTPV {
         productos.add(new Producto("Boquerones Fritos", 9.40, 2, 30));
         productos.add(new Producto("Calamares a la Romana", 7.20, 2, 80));
 
+        // Productos de la categoría "Tapas Frias"
         productos.add(new Producto("Ensaladilla Rusa", 2.80, 3, 40));
         productos.add(new Producto("Queso", 3.00, 3, 30));
         productos.add(new Producto("Aceitunas", 2.50, 3, 70));
@@ -75,6 +83,7 @@ public class InitBasicTPV {
         productos.add(new Producto("Boquerones en Vinagre", 7.00, 3, 20));
         productos.add(new Producto("Jamon Iberico", 7.50, 3, 15));
 
+        // Productos de la categoría "Bocatas Calientes"
         productos.add(new Producto("Bocata de Bacon", 4.50, 4, 30));
         productos.add(new Producto("Bocata de Lomo", 4.80, 4, 25));
         productos.add(new Producto("Bocata de Chorizo", 4.50, 4, 20));
@@ -83,14 +92,16 @@ public class InitBasicTPV {
         productos.add(new Producto("Bocata de Pollo", 4.50, 4, 22));
         productos.add(new Producto("Bocata de Atún y Queso", 5.20, 4, 10));
         productos.add(new Producto("Bocata de Panceta", 4.50, 4, 15));
+
+        // Productos de la categoría "Bocatas Frios"
         productos.add(new Producto("Bocata de Jamón Serrano", 3.50, 5, 25));
         productos.add(new Producto("Bocata de Queso Brie", 3.80, 5, 20));
-
         productos.add(new Producto("Bocata de Salmón", 4.50, 5, 15));
         productos.add(new Producto("Bocata de Vegetales", 3.20, 5, 18));
         productos.add(new Producto("Bocata de Atún", 3.80, 5, 22));
         productos.add(new Producto("Bocata de Sardinas", 3.50, 5, 14));
 
+        // Productos de la categoría "Platos Combinados"
         productos.add(new Producto("Platos Combinados 1", 7.50, 6, 15));
         productos.add(new Producto("Platos Combinados 2", 9.00, 6, 10));
         productos.add(new Producto("Platos Combinados 3", 8.50, 6, 8));
@@ -102,6 +113,7 @@ public class InitBasicTPV {
         productos.add(new Producto("Platos Combinados 9", 6.00, 6, 30));
         productos.add(new Producto("Platos Combinados 10", 5.50, 6, 20));
 
+        // Productos de la categoría "Llescas Calientes"
         productos.add(new Producto("Llesca de Jamón y Queso", 5.50, 7, 20));
         productos.add(new Producto("Llesca de Bacon y Champiñones", 6.00, 7, 18));
         productos.add(new Producto("Llesca de Atún y Pimientos", 5.80, 7, 15));
@@ -113,6 +125,7 @@ public class InitBasicTPV {
         productos.add(new Producto("Llesca de Vegetales", 5.50, 7, 14));
         productos.add(new Producto("Llesca de Anchoas", 6.80, 7, 10));
 
+        // Productos de la categoría "Llescas Frios"
         productos.add(new Producto("Llesca de Jamón Serrano", 4.50, 8, 20));
         productos.add(new Producto("Llesca de Atún", 4.80, 8, 15));
         productos.add(new Producto("Llesca de Queso Brie", 5.20, 8, 10));
@@ -120,6 +133,7 @@ public class InitBasicTPV {
         productos.add(new Producto("Llesca de Salmón", 5.80, 8, 8));
         productos.add(new Producto("Llesca de Anchoas", 5.00, 8, 10));
 
+        // Productos de la categoría "Ofertas"
         productos.add(new Producto("Oferta 2x1 Bebidas", 10.00, 9, 10));
         productos.add(new Producto("Menú Tapa y Bebida", 12.00, 9, 10));
         productos.add(new Producto("Combo Bocata y Bebida", 8.50, 9, 15));
@@ -131,6 +145,7 @@ public class InitBasicTPV {
         productos.add(new Producto("Menú Infantil", 7.50, 9, 15));
         productos.add(new Producto("Pack de Cubatas", 30.00, 9, 5));
 
+        // Productos de la categoría "Cubatas"
         productos.add(new Producto("Cuba Libre", 6.00, 10, 50));
         productos.add(new Producto("Gin Tonic", 7.00, 10, 40));
         productos.add(new Producto("Mojito", 8.00, 10, 30));
@@ -142,11 +157,9 @@ public class InitBasicTPV {
         productos.add(new Producto("Brandy Coca-Cola", 7.20, 10, 30));
         productos.add(new Producto("Cocktail de la Casa", 9.00, 10, 15));
 
-        productos.forEach(productoUnit -> {
-            productoService.save(productoUnit);
-        });
+        // Guardar todos los productos en la base de datos
+        productos.forEach(producto -> productoService.save(producto));
 
         return "TPV inicializado con éxito.";
     }
-
 }

@@ -23,35 +23,45 @@ import com.tpv.api.service.MesaServiceImpl;
 import com.tpv.api.service.PedidoServiceImpl;
 import com.tpv.api.service.TransaccionServiceImpl;
 
+/**
+ * Controlador REST para gestionar operaciones relacionadas con mesas y pedidos.
+ * Expone endpoints para actualizar pedidos, crear mesas y pedidos, eliminar mesas y obtener información de mesas.
+ */
 @RestController
 @RequestMapping("/api/v1/gestionmesa")
 public class GestionMesa {
 
     @Autowired
-    DetallePedidoServiceImpl detallePedidoService;
+    private DetallePedidoServiceImpl detallePedidoService;
 
     @Autowired
-    MesaServiceImpl mesaService;
+    private MesaServiceImpl mesaService;
 
     @Autowired
-    PedidoServiceImpl pedidoService;
+    private PedidoServiceImpl pedidoService;
 
     @Autowired
-    TransaccionServiceImpl transaccionService;
+    private TransaccionServiceImpl transaccionService;
 
+    /**
+     * Actualiza los detalles de un pedido comparando los detalles antiguos con los nuevos.
+     * 
+     * @param request Contiene los detalles antiguos y nuevos del pedido.
+     * @return ResponseEntity con un mensaje de éxito o error.
+     */
     @PostMapping("/updatePedidoV2")
     public ResponseEntity<String> updatePedidoV2(@RequestBody DetallePedidoUpdateRequest request) {
         DetallePedido[] oldDetallePedido = request.getOldDetalle();
         DetallePedido[] newDetallePedido = request.getNewDetalle();
 
         try {
+            // Eliminar o actualizar detalles antiguos
             for (DetallePedido oldDetalle : oldDetallePedido) {
                 boolean found = false;
 
                 for (DetallePedido newDetalle : newDetallePedido) {
                     if (oldDetalle.getIdDetallePedido() == newDetalle.getIdDetallePedido()) {
                         found = true;
-                        // Si el detalle ha cambiado, actualizarlo
                         if (!oldDetalle.equals(newDetalle)) {
                             detallePedidoService.update(newDetalle);
                         }
@@ -64,6 +74,7 @@ public class GestionMesa {
                 }
             }
 
+            // Agregar nuevos detalles
             for (DetallePedido newDetalle : newDetallePedido) {
                 boolean exists = false;
 
@@ -73,7 +84,7 @@ public class GestionMesa {
                         break;
                     }
                 }
-                System.out.println("exists: " + exists);
+
                 if (!exists) {
                     detallePedidoService.save(newDetalle);
                 }
@@ -86,6 +97,9 @@ public class GestionMesa {
         }
     }
 
+    /**
+     * Clase interna para manejar la solicitud de actualización de detalles de pedido.
+     */
     public static class DetallePedidoUpdateRequest {
         private DetallePedido[] oldDetalle;
         private DetallePedido[] newDetalle;
@@ -107,15 +121,27 @@ public class GestionMesa {
         }
     }
 
+    /**
+     * Crea una nueva mesa y un pedido asociado.
+     * 
+     * @param nMesa    Número de la mesa.
+     * @param idUsuario ID del usuario que realiza el pedido.
+     * @return El pedido creado.
+     */
     @GetMapping("/createMesayPedido/{nMesa}&{idUsuario}")
     public Pedido createMesayPedido(@PathVariable String nMesa, @PathVariable long idUsuario) {
         Mesa newMesa = mesaService.save(new Mesa(nMesa));
-        System.out.println("newMesa: " + newMesa.getIdMesa());
         Pedido newPedido = pedidoService.save(new Pedido(idUsuario, newMesa.getIdMesa()));
-        System.out.println("newPedido: " + newPedido.getIdMesa());
         return newPedido;
     }
 
+    /**
+     * Elimina una mesa y su pedido asociado.
+     * 
+     * @param idMesa   ID de la mesa a eliminar.
+     * @param idPedido ID del pedido a eliminar.
+     * @return ResponseEntity con un mensaje de éxito.
+     */
     @GetMapping("/dropMesa/{idMesa}&{idPedido}")
     public ResponseEntity<String> dropMesa(@PathVariable long idMesa, @PathVariable long idPedido) {
         detallePedidoService.removeByIdPedido(idPedido);
@@ -124,56 +150,58 @@ public class GestionMesa {
         return ResponseEntity.ok("Mesa eliminada correctamente");
     }
 
+    /**
+     * Obtiene la información de una mesa específica, incluyendo su pedido y detalles.
+     * 
+     * @param numero Número de la mesa.
+     * @return Información de la mesa y su pedido.
+     */
     @GetMapping("/getMesaInfo/{numero}")
-    public MesaInfoResponse postMethodName(@PathVariable String numero) {
+    public MesaInfoResponse getMesaInfo(@PathVariable String numero) {
         MesaInfoResponse entity = new MesaInfoResponse();
         PedidoResponse pedidoResponse = new PedidoResponse();
 
         Mesa mesaResponse = mesaService.findByNumeroMesaAbierta(numero);
-        System.out.println("mesaResponse: " + mesaResponse);
         if (mesaResponse == null) {
             return null;
         }
+
         Pedido pedido = pedidoService.getPedidosByMesa(mesaResponse.getIdMesa());
         Iterable<DetallePedido> detallePedidoResponse = detallePedidoService.findByIdPedido((int) pedido.getIdPedido());
-
         List<Transaccion> transaccion = transaccionService.findByPedido(pedido.getIdPedido());
 
-        if (transaccion.isEmpty()) {
-            pedidoResponse.setTotalPagado(0);
-        } else {
-            float totalPagado = 0;
-            for (Transaccion t : transaccion) {
-                totalPagado += t.getTotalPagado();
-            }
-            pedidoResponse.setTotalPagado(totalPagado);
+        // Calcular el total pagado
+        float totalPagado = 0;
+        for (Transaccion t : transaccion) {
+            totalPagado += t.getTotalPagado();
         }
-        pedidoResponse.setPrecioTotal(pedido.getPrecioTotal());
+        pedidoResponse.setTotalPagado(totalPagado);
 
-        boolean allPaid = true; 
-
+        // Verificar si todos los detalles del pedido están pagados
+        boolean allPaid = true;
         for (DetallePedido dp : detallePedidoResponse) {
             if (dp.getCantidad() != dp.getPagados()) {
-                allPaid = false; 
-                break; 
+                allPaid = false;
+                break;
             }
         }
 
+        // Si todos están pagados, cerrar la mesa
         if (allPaid) {
             mesaResponse.setEstado(3);
             mesaService.update(mesaResponse);
         }
 
+        // Configurar la respuesta
         entity.setMesa(mesaResponse);
-
         pedidoResponse.setIdPedido(pedido.getIdPedido());
         pedidoResponse.setIdUsuario(pedido.getIdUsuario());
         pedidoResponse.setFechaPedido(pedido.getFechaPedido());
         pedidoResponse.setDetallePedido(detallePedidoResponse);
+        pedidoResponse.setPrecioTotal(pedido.getPrecioTotal());
 
         entity.setPedido(pedidoResponse);
 
         return entity;
     }
-
 }

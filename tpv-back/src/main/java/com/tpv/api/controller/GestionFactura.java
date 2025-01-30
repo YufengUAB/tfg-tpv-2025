@@ -24,25 +24,34 @@ import com.tpv.api.service.TransaccionServiceImpl;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+/**
+ * Controlador REST para gestionar la generación de facturas.
+ * Proporciona endpoints para obtener facturas por mesas cerradas, fechas específicas o rangos de fechas.
+ */
 @RestController
 @RequestMapping("/api/v1/gestionfactura")
 public class GestionFactura {
 
     @Autowired
-    DetallePedidoServiceImpl detallePedidoService;
+    private DetallePedidoServiceImpl detallePedidoService;
 
     @Autowired
-    MesaServiceImpl mesaService;
+    private MesaServiceImpl mesaService;
 
     @Autowired
-    PedidoServiceImpl pedidoService;
+    private PedidoServiceImpl pedidoService;
 
     @Autowired
-    TransaccionServiceImpl transaccionService;
+    private TransaccionServiceImpl transaccionService;
 
     @Autowired
-    ProductoServiceImpl productoService;
+    private ProductoServiceImpl productoService;
 
+    /**
+     * Obtiene todas las facturas de las mesas cerradas.
+     * 
+     * @return Lista de facturas con detalles de mesas, pedidos y transacciones.
+     */
     @GetMapping("/getFactura")
     public List<MesaInfoResponse> getFactura() {
         List<MesaInfoResponse> entityList = new ArrayList<>();
@@ -80,6 +89,12 @@ public class GestionFactura {
         return entityList;
     }
 
+    /**
+     * Obtiene las facturas de las mesas cerradas para una fecha específica.
+     * 
+     * @param fecha Fecha en formato "yyyy-MM-dd".
+     * @return Lista de facturas que coinciden con la fecha proporcionada.
+     */
     @GetMapping("/getFacturaByFecha/{fecha}")
     public List<MesaInfoResponse> getFacturaByFecha(@PathVariable String fecha) {
         List<MesaInfoResponse> entityList = new ArrayList<>();
@@ -94,10 +109,15 @@ public class GestionFactura {
             PedidoResponse pedidoResponse = new PedidoResponse();
 
             Pedido pedido = pedidoService.getPedidosByMesa(mesaResponse.getIdMesa());
+            if (pedido == null) {
+                continue;
+            }
+
             Date fechaPedido = pedido.getFechaPedido();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             String formattedDate = dateFormat.format(fechaPedido);
-            if (pedido == null || !formattedDate.equals(fecha)) {
+
+            if (!formattedDate.equals(fecha)) {
                 continue;
             }
 
@@ -120,18 +140,23 @@ public class GestionFactura {
         return entityList;
     }
 
+    /**
+     * Obtiene las facturas de las mesas cerradas dentro de un rango de fechas.
+     * 
+     * @param startDate Fecha de inicio en formato "yyyy-MM-dd".
+     * @param endDate   Fecha de fin en formato "yyyy-MM-dd".
+     * @return Lista de facturas que coinciden con el rango de fechas proporcionado.
+     */
     @GetMapping("/getFacturaByFecha/{startDate}/{endDate}")
     public List<MesaInfoResponse> getFacturaByFecha(@PathVariable String startDate, @PathVariable String endDate) {
         List<MesaInfoResponse> entityList = new ArrayList<>();
 
-        // Obtener las mesas con estado cerrado
         List<Mesa> mesas = mesaService.getAllCerrado();
         if (mesas == null || mesas.isEmpty()) {
             return entityList;
         }
 
         try {
-            // Formateador para convertir las fechas de entrada
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date start = dateFormat.parse(startDate);
             Date end = dateFormat.parse(endDate);
@@ -141,8 +166,6 @@ public class GestionFactura {
                 PedidoResponse pedidoResponse = new PedidoResponse();
 
                 Pedido pedido = pedidoService.getPedidosByMesa(mesaResponse.getIdMesa());
-
-                // Verificar si el pedido es nulo o su fecha está fuera del rango
                 if (pedido == null) {
                     continue;
                 }
@@ -152,26 +175,22 @@ public class GestionFactura {
                     continue;
                 }
 
-                // Obtener detalles del pedido y transacciones asociadas
                 Iterable<DetallePedido> detallePedidoResponse = detallePedidoService
                         .findByIdPedido((int) pedido.getIdPedido());
                 Iterable<Transaccion> transaccion = transaccionService.findByPedido(pedido.getIdPedido());
 
-                // Configurar los datos del pedido
                 pedidoResponse.setIdPedido(pedido.getIdPedido());
                 pedidoResponse.setIdUsuario(pedido.getIdUsuario());
                 pedidoResponse.setFechaPedido(pedido.getFechaPedido());
                 pedidoResponse.setDetallePedido(detallePedidoResponse);
                 pedidoResponse.setTransaccion(transaccion);
 
-                // Configurar los datos de la mesa y agregar a la lista de respuesta
                 entity.setMesa(mesaResponse);
                 entity.setPedido(pedidoResponse);
 
                 entityList.add(entity);
             }
         } catch (ParseException e) {
-            // Manejar errores de formato de fecha
             e.printStackTrace();
         }
 

@@ -10,16 +10,30 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tpv.api.impresora.FacturaRequest;
 import com.tpv.api.impresora.FacturaService;
 
+/**
+ * Controlador REST para gestionar la generación e impresión de facturas.
+ */
 @RestController
 @RequestMapping("/api/facturas")
 public class FacturaController {
 
     private final FacturaService facturaService;
 
+    /**
+     * Constructor para inyectar el servicio de facturas.
+     * 
+     * @param facturaService Servicio que maneja la lógica de generación e impresión de facturas.
+     */
     public FacturaController(FacturaService facturaService) {
         this.facturaService = facturaService;
     }
 
+    /**
+     * Endpoint para generar e imprimir una factura.
+     * 
+     * @param facturaRequest Datos de la factura a generar e imprimir.
+     * @return ResponseEntity con un mensaje de éxito o error.
+     */
     @PostMapping("/imprimir")
     public ResponseEntity<String> imprimirFactura(@RequestBody FacturaRequest facturaRequest) {
         try {

@@ -14,6 +14,7 @@ const FacturaPage = () => {
     const [productos, setProductos] = useState([]);
     const [facturaSeleccionada, setFacturaSeleccionada] = useState(null); // Para controlar la fila seleccionada
 
+    // Verifica si el usuario está autenticado y carga los datos iniciales
     useEffect(() => {
         if (!userData) {
             navigate('/login');
@@ -23,6 +24,7 @@ const FacturaPage = () => {
         }
     }, [userData, navigate]);
 
+    // Obtiene todas las facturas
     const fetchPedidos = async () => {
         try {
             const facturas = await getFacturas();
@@ -32,6 +34,7 @@ const FacturaPage = () => {
         }
     };
 
+    // Obtiene las facturas por fecha o rango de fechas
     const fetchPedidosByFecha = async () => {
         try {
             const facturas = fechaInicio === fechaFin
@@ -43,10 +46,12 @@ const FacturaPage = () => {
         }
     };
 
+    // Actualiza las facturas cuando cambian las fechas
     useEffect(() => {
         fetchPedidosByFecha();
     }, [fechaInicio, fechaFin]);
 
+    // Obtiene todos los productos
     const fetchProductos = async () => {
         try {
             const productos = await getProductos();
@@ -56,49 +61,51 @@ const FacturaPage = () => {
         }
     };
 
+    // Calcula el total de un pedido
     const calcularTotal = (detallePedido) => {
         return detallePedido.reduce((total, item) => total + item.precio_unitario * item.cantidad, 0);
     };
 
+    // Navega de regreso a la página principal
     const handleBackspace = () => {
         navigate('/main');
     };
 
-    // Función para manejar el clic en una fila
+    // Maneja el clic en una fila para mostrar/ocultar detalles
     const handleRowClick = (facturaItem) => {
         if (facturaSeleccionada === facturaItem.pedido.idPedido) {
-            setFacturaSeleccionada(null); // Si ya está seleccionada, la deseleccionamos
+            setFacturaSeleccionada(null); // Deselecciona si ya está seleccionada
         } else {
-            setFacturaSeleccionada(facturaItem.pedido.idPedido); // Seleccionamos la nueva fila
+            setFacturaSeleccionada(facturaItem.pedido.idPedido); // Selecciona la nueva fila
         }
     };
 
-    // Obtener el nombre del producto por id
+    // Obtiene el nombre de un producto por su ID
     const obtenerNombreProducto = (idProducto) => {
         const producto = productos.find(p => p.id_producto === idProducto);
         return producto ? producto.nombre : 'Producto no encontrado';
     };
 
+    // Genera un informe CSV con las ventas y productos consumidos
     const generarInformeCSV = () => {
-        // Obtener la fecha actual para el informe
         const fechaGeneracion = new Date().toLocaleDateString();
-    
-        // Agrupar las facturas por ID de pedido y calcular las ventas totales por pedido
+
+        // Agrupa las facturas por ID de pedido y calcula las ventas totales
         const ventasPorPedido = facturas.reduce((acc, factura) => {
             const idPedido = factura.pedido.idPedido;
             const totalVenta = calcularTotal(factura.pedido.detallePedido);
-    
+
             if (!acc[idPedido]) {
                 acc[idPedido] = {
                     numeroMesa: factura.mesa.numero,
                     productos: [],
                     metodoPago: { efectivo: 0, tarjeta: 0 },
                     totalVenta: 0,
-                    fechaPedido: factura.pedido.fechaPedido // Aquí tomamos la fecha del pedido
+                    fechaPedido: factura.pedido.fechaPedido
                 };
             }
-    
-            // Agregar productos al pedido
+
+            // Agrega productos al pedido
             factura.pedido.detallePedido.forEach(detalle => {
                 const nombreProducto = obtenerNombreProducto(detalle.id_producto);
                 acc[idPedido].productos.push({
@@ -108,75 +115,47 @@ const FacturaPage = () => {
                     totalProducto: (detalle.precio_unitario * detalle.cantidad).toFixed(2)
                 });
             });
-    
-            // Agregar métodos de pago al pedido y sumar los totales por cada tipo de pago
+
+            // Agrega métodos de pago y suma los totales
             factura.pedido.transaccion.forEach(transaccion => {
                 const metodoPago = transaccion.metodo_pago === 1 ? 'efectivo' : 'tarjeta';
                 acc[idPedido].metodoPago[metodoPago] += transaccion.total_pagado;
             });
-    
-            // Sumar el total de la venta
+
             acc[idPedido].totalVenta += totalVenta;
-    
             return acc;
         }, {});
-    
-        // Crear los encabezados del CSV
+
+        // Crea los encabezados del CSV
         const encabezado = ['ID Pedido', 'Fecha Pedido', 'Numero Mesa', 'Productos', 'Metodo de Pago', 'Total Ventas (Euros)'];
-    
-        // Crear las filas con los datos de ventas por ID de pedido
+
+        // Crea las filas con los datos de ventas
         const filas = Object.entries(ventasPorPedido).map(([idPedido, datos]) => {
             const productos = datos.productos.map(p => `${p.nombreProducto} (x${p.cantidad})`).join(', ');
             const metodoPago = `Efectivo: ${datos.metodoPago.efectivo.toFixed(2)} Euros, Tarjeta: ${datos.metodoPago.tarjeta.toFixed(2)} Euros`;
-    
-            // Convertimos la fecha del pedido en formato legible
             const fechaPedido = new Date(datos.fechaPedido).toLocaleDateString();
-    
+
             return [
                 `"${idPedido}"`,
-                `"${fechaPedido}"`,  // Fecha del pedido
+                `"${fechaPedido}"`,
                 `"${datos.numeroMesa}"`,
                 `"${productos}"`,
                 `"${metodoPago}"`,
                 `"${datos.totalVenta.toFixed(2)} Euros"`
             ];
         });
-    
-        // Calcular el total de todos los pedidos
+
+        // Calcula los totales generales
         const totalGeneral = Object.values(ventasPorPedido).reduce((total, datos) => total + datos.totalVenta, 0).toFixed(2);
         const totalEfectivo = Object.values(ventasPorPedido).reduce((total, datos) => total + datos.metodoPago.efectivo, 0).toFixed(2);
         const totalTarjeta = Object.values(ventasPorPedido).reduce((total, datos) => total + datos.metodoPago.tarjeta, 0).toFixed(2);
-    
-        // Agregar la fila de total general
-        const filaTotal = [
-            '"Total General"',
-            '',
-            '',
-            '',
-            '',
-            `"${totalGeneral} Euros"`
-        ];
-    
-        // Agregar la fila de total efectivo y total tarjeta
-        const filaTotalesMetodoPago = [
-            '"Total Efectivo"',
-            '',
-            '',
-            '',
-            '',
-            `"${totalEfectivo} Euros"`
-        ];
-    
-        const filaTotalTarjeta = [
-            '"Total Tarjeta"',
-            '',
-            '',
-            '',
-            '',
-            `"${totalTarjeta} Euros"`
-        ];
-    
-        // Unir el encabezado, las filas y las filas de totales utilizando punto y coma como delimitador
+
+        // Agrega filas de totales al CSV
+        const filaTotal = ['"Total General"', '', '', '', '', `"${totalGeneral} Euros"`];
+        const filaTotalesMetodoPago = ['"Total Efectivo"', '', '', '', '', `"${totalEfectivo} Euros"`];
+        const filaTotalTarjeta = ['"Total Tarjeta"', '', '', '', '', `"${totalTarjeta} Euros"`];
+
+        // Crea el contenido del CSV
         const csvContent = [
             encabezado.join(';'),
             ...filas.map(row => row.join(';')),
@@ -184,11 +163,9 @@ const FacturaPage = () => {
             filaTotalesMetodoPago.join(';'),
             filaTotalTarjeta.join(';')
         ].join('\n');
-    
-        // Lista de productos consumidos con la cantidad, ordenados de mayor a menor
+
+        // Agrupa y ordena los productos consumidos
         const productosConsumidos = Object.values(ventasPorPedido).flatMap(datos => datos.productos);
-        
-        // Agrupar los productos y calcular las cantidades totales por cada uno
         const productosTotales = productosConsumidos.reduce((acc, producto) => {
             const key = producto.nombreProducto;
             if (!acc[key]) {
@@ -197,35 +174,28 @@ const FacturaPage = () => {
             acc[key].cantidad += producto.cantidad;
             return acc;
         }, {});
-    
-        // Ordenar los productos de mayor a menor según la cantidad
+
         const productosOrdenados = Object.entries(productosTotales)
             .sort((a, b) => b[1].cantidad - a[1].cantidad)
-            .map(([nombreProducto, datos]) => {
-                return `"${nombreProducto}"`;  // Mostrar solo el nombre del producto
-            });
-    
-        // Crear la tabla de productos consumidos con encabezado
+            .map(([nombreProducto, datos]) => `"${nombreProducto}"`);
+
+        // Crea la tabla de productos consumidos
         const encabezadoProductos = ['Producto', 'Cantidad'];
         const filasProductos = Object.entries(productosTotales).map(([nombreProducto, datos]) => {
-            return [`"${nombreProducto}"`, `"${datos.cantidad}"`];  // Mostrar nombre y cantidad de cada producto
+            return [`"${nombreProducto}"`, `"${datos.cantidad}"`];
         });
-    
-        // Añadir filas en blanco antes de la tabla
+
         const tablaProductosConsumidos = [
-            '',  // Fila en blanco
-            '',  // Fila en blanco
+            '',
+            '',
             encabezadoProductos.join(';'),
             ...filasProductos.map(row => row.join(';'))
         ].join('\n');
-    
-        // Completar el CSV con la tabla de productos consumidos
-        const csvFinal = [
-            csvContent,
-            tablaProductosConsumidos
-        ].join('\n');
-    
-        // Crear un archivo CSV y permitir la descarga con codificación UTF-8
+
+        // Combina el contenido del CSV con la tabla de productos
+        const csvFinal = [csvContent, tablaProductosConsumidos].join('\n');
+
+        // Crea y descarga el archivo CSV
         const blob = new Blob([csvFinal], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
         const url = URL.createObjectURL(blob);
@@ -233,14 +203,12 @@ const FacturaPage = () => {
         link.setAttribute('download', 'informe_ventas_por_pedido.csv');
         link.click();
     };
-    
+
     return (
         <div className="factura-page">
             <div className="factura-header">
                 <div>
-                    <button className='button-volver-factura' onClick={handleBackspace}>
-                        ←
-                    </button>
+                    <button className='button-volver-factura' onClick={handleBackspace}>←</button>
                     <span className="factura-title">Facturas</span>
                 </div>
 

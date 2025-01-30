@@ -22,45 +22,72 @@ import com.tpv.api.service.TransaccionServiceImpl;
 public class TransaccionController {
 
     @Autowired
-    TransaccionServiceImpl transaccionService;
-        
+    private TransaccionServiceImpl transaccionService; // Servicio para la gestión de transacciones
+
+    /**
+     * Obtiene todas las transacciones disponibles en el sistema.
+     * @return Lista de transacciones.
+     */
     @GetMapping("/transacciones")
-    public List<Transaccion> getAll(){
+    public List<Transaccion> getAll() {
         return transaccionService.getAll();
     }
-    
+
+    /**
+     * Guarda una nueva transacción con la fecha actual.
+     * @param transaccion Datos de la transacción a guardar.
+     * @return La transacción creada.
+     */
     @PostMapping("/save")
-    public ResponseEntity<Object> save(@RequestBody Transaccion transaccion){
-        Date fecha = new Date(System.currentTimeMillis());
-        transaccion.setFechaTransaccion(fecha);
-        Transaccion nueva_transaccion = transaccionService.save(transaccion);
-        return new ResponseEntity<>(nueva_transaccion, HttpStatus.CREATED);
+    public ResponseEntity<Transaccion> save(@RequestBody Transaccion transaccion) {
+        transaccion.setFechaTransaccion(new Date(System.currentTimeMillis()));
+        Transaccion nuevaTransaccion = transaccionService.save(transaccion);
+        return new ResponseEntity<>(nuevaTransaccion, HttpStatus.CREATED);
     }
-    
+
+    /**
+     * Obtiene una transacción por su ID.
+     * @param id Identificador de la transacción.
+     * @return Transacción encontrada o una respuesta vacía si no existe.
+     */
     @GetMapping("/transaccion/{id}")
-    public ResponseEntity<Transaccion> getByIdTransaccion(@PathVariable long id){
+    public ResponseEntity<Transaccion> getByIdTransaccion(@PathVariable long id) {
         Transaccion transaccionPorId = transaccionService.getByIdTransaccion(id);
         return ResponseEntity.ok(transaccionPorId);
     }
 
+    /**
+     * Elimina una transacción por su ID.
+     * @param id Identificador de la transacción a eliminar.
+     * @return Un mapa con la confirmación de eliminación.
+     */
     @PostMapping("/remove/{id}")
-    public ResponseEntity<HashMap<String,Boolean>> remove(@PathVariable long id){
-        this.transaccionService.remove(id);
+    public ResponseEntity<HashMap<String, Boolean>> remove(@PathVariable long id) {
+        transaccionService.remove(id);
         HashMap<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Actualiza una transacción existente.
+     * @param transaccion Datos de la transacción a actualizar.
+     * @return Código de respuesta indicando el resultado de la actualización.
+     */
     @PostMapping("/update")
-    public ResponseEntity<Integer> update(@RequestBody Transaccion transaccion){
+    public ResponseEntity<Integer> update(@RequestBody Transaccion transaccion) {
         int transaccionActualizada = transaccionService.update(transaccion);
         return ResponseEntity.ok(transaccionActualizada);
     }
 
+    /**
+     * Obtiene una lista de transacciones asociadas a un pedido.
+     * @param idPedido Identificador del pedido.
+     * @return Lista de transacciones relacionadas con el pedido especificado.
+     */
     @GetMapping("/transaccion/pedido/{idPedido}")
-    public ResponseEntity<List<Transaccion>> findByPedido(@PathVariable long idPedido){
+    public ResponseEntity<List<Transaccion>> findByPedido(@PathVariable long idPedido) {
         List<Transaccion> transaccionPorPedido = transaccionService.findByPedido(idPedido);
         return ResponseEntity.ok(transaccionPorPedido);
     }
-
 }
