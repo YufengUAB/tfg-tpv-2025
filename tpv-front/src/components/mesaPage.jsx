@@ -584,10 +584,13 @@ const MesaPage = () => {
             </div>
           </div>
 
-          {/* Condición para mostrar los productos según la categoría seleccionada */}
-          {categoriaSeleccionada && (
+          {/* Condición para mostrar los productos según la categoría seleccionada sino se muestra los productos pagados*/}
+          {categoriaSeleccionada ? (
             <div className="productos-container">
               <div className="productos-grid">
+                <button className="producto-button" onClick={() => setCategoriaSeleccionada(null)}>
+                  Volver
+                </button>
                 {productosPorCategoria.map((producto) => (
                   <button
                     key={producto.id_producto}
@@ -597,6 +600,53 @@ const MesaPage = () => {
                     {producto.nombre}
                   </button>
                 ))}
+              </div>
+            </div>
+          ) : (
+            <div className='mesa-info-container'>
+              <div className="tabla-contenedor" style={{ marginTop: '20px' }}>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Productos Pagados</th>
+                      <th>Cantidad</th>
+                      <th>Precio</th>
+                      <th>Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {detallePedido.map((detalle) => {
+                      const coincidencias = productos.filter(
+                        (prod) => prod.id_producto === detalle.id_producto
+                      );
+                      const producto = coincidencias.length > 0 ? coincidencias[0] : { nombre: 'Nombre no disponible' };
+                      const isSelected = productoSeleccionado && productoSeleccionado.id_producto === detalle.id_producto;
+                      const cantidadRestante = detalle.pagados;
+
+                      if (detalle.pagados <= 0) {
+                        return null;
+                      }
+
+                      return (
+                        <tr
+                          key={detalle.id_producto}
+                          className={`detalle-pedido-item ${isSelected ? 'selected' : ''}`}
+                          onClick={() => manejarSeleccionProducto(detalle)}
+                        >
+                          <td>{producto.nombre}</td>
+                          <td>
+                            <div className="cantidad-container">
+                              <div className="cantidad">{cantidadRestante}</div>
+                            </div>
+                          </td>
+                          <td>{detalle.precio_unitario}€</td>
+                          <td>{(cantidadRestante * detalle.precio_unitario).toFixed(2)}€</td>
+                        </tr>
+                      );
+                    })}
+
+                  </tbody>
+                </table>
               </div>
             </div>
           )}
